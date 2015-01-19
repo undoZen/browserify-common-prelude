@@ -1,0 +1,29 @@
+{
+  "name": "browserify-common-prelude",
+  "version": "0.0.0",
+  "description": "browserify common prelude",
+  "main": "dist/bcp.js",
+  "files": ["dist/bcp.js", "dist/bcp.min.js"],
+  "scripts": {
+    "build": "./build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/undoZen/browserify-common-prelude.git"
+  },
+  "keywords": [
+    "browserify",
+    "prelude"
+  ],
+  "author": "undoZen <opensource@undoZen.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/undoZen/browserify-common-prelude/issues"
+  },
+  "homepage": "https://github.com/undoZen/browserify-common-prelude",
+  "devDependencies": {
+    "qas": "^0.4.0",
+    "uglify-js": "^2.4.16"
+  }
+}
