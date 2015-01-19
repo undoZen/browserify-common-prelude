@@ -11,6 +11,10 @@ try {
 } catch (e) {}
 var qas = fs.readFileSync('./node_modules/qas/qas.js', 'utf-8');
 var bcp = fs.readFileSync('./bcp.js', 'utf-8').replace("'{QAS}'", qas);
-var min = UglifyJS.minify(bcp, {fromString: true});
+var min = UglifyJS.minify(bcp, {fromString: true}).code;
+min = min.replace(/;$/, '');
+if (min[0] === '!') {
+    min = '(' + min.substring(1) + ')'
+}
 fs.writeFileSync('./dist/bcp.js', bcp, 'utf-8');
-fs.writeFileSync('./dist/bcp.min.js', min.code.replace(/;\s*$/, ''), 'utf-8');
+fs.writeFileSync('./dist/bcp.min.js', min, 'utf-8');
