@@ -17,9 +17,9 @@
         modules = modules || {};
         for (var k in modules) {
             if (modules.hasOwnProperty(k)) {
-                var sk = (k[0] === '/') ? k : '/' + k; // fix for browserify external()
-                if (!(sk in _modules)) {
-                    _modules[sk] = modules[k];
+                if (!(k in _modules)) {
+                    _modules[k] = modules[k];
+                    if (k[0] !== '/') _modules['/' + k] = modules[k]; // fix for browserify external()
                 }
             }
         }
@@ -27,43 +27,49 @@
 
     function maybeReady() {
         loadedLibs += 1;
-        console.log('mr');
         setImmediate(function () {
             if (loadedLibs >= document.querySelectorAll('script[data-common]').length) {
-                console.log('ready');
                 QAS.ready();
             }
         });
     }
 
-    function prelude(modules, cache, entry) {
+    function prelude(modules, cache, entries) {
         mergeModules(modules)
-        if (!entry || !entry.length) return maybeReady();
-        QAS(function (modules, cache, entry) {
-            function require(name) {
-                if (!cache[name]) {
-                    if (!modules[name]) {
-                        // 因为现在和之前加载的 modules 都在这了，直接返回找不到
-                        var err = new Error('Cannot find module \'' +
-                            name +
-                            '\'');
-                        err.code = 'MODULE_NOT_FOUND';
-                        throw err;
-                    }
-                    var m = cache[name] = {
-                        exports: {}
-                    };
-                    modules[name][0].call(m.exports, function (x) {
-                        var id = modules[name][1][x];
-                        return require(id ? id : '/' + x); // fix for browserify external()
-                    }, m, m.exports,prelude,modules,cache,entry);
+        if (!entries || !entries.length) {
+            maybeReady();
+        } else {
+            var entry;
+            QAS(function (entries) {
+                while ((entry = entries.shift())) {
+                    require(entry);
                 }
-                return cache[name].exports;
+            }, entries);
+        }
+        return require;
+        function require(name) {
+            if (!QAS.loaded) {
+                throw new Error('external libs not ready!');
             }
-            for (var i = 0; i < entry.length; i++) {
-                require(entry[i]);
+            if (!_cache[name]) {
+                if (!_modules[name]) {
+                    // 因为现在和之前加载的 modules 都在这了，直接返回找不到
+                    var err = new Error('Cannot find module \'' +
+                        name +
+                        '\'');
+                    err.code = 'MODULE_NOT_FOUND';
+                    throw err;
+                }
+                var m = _cache[name] = {
+                    exports: {}
+                };
+                _modules[name][0].call(m.exports, function (x) {
+                    var id = _modules[name][1][x];
+                    return require(id ? id : '/' + x); // fix for browserify external()
+                }, m, m.exports,prelude,_modules,_cache,entries);
             }
-        }, _modules, _cache, entry); // 使用全局的 cache 和 modules
+            return _cache[name].exports;
+        }
     }
 
     return prelude;

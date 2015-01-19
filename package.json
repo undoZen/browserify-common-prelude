@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "description": "browserify common prelude",
   "main": "dist/bcp.js",
-  "files": ["dist/bcp.js", "dist/bcp.min.js"],
+  "files": [
+    "dist/bcp.js",
+    "dist/bcp.min.js"
+  ],
   "scripts": {
     "build": "./build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,7 +26,7 @@
   },
   "homepage": "https://github.com/undoZen/browserify-common-prelude",
   "devDependencies": {
-    "qas": "^0.4.0",
+    "qas": "^0.4.1",
     "uglify-js": "^2.4.16"
   }
 }
