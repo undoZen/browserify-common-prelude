@@ -8,7 +8,7 @@ npm i --save browserify-common-prelude
 
 ## usage
 
-Better use with [factor-bundle](https://github.com/substack/factor-bundle) ([https://github.com/undoZen/gulp-factor-bundle](gulp plugin)).
+Better use with [factor-bundle](https://github.com/substack/factor-bundle) ([gulp plugin](https://github.com/undoZen/gulp-factor-bundle)).
 
 ```javascript
 // build.js
@@ -33,7 +33,7 @@ browserify({
 browserify({
     prelude: bcp
 })
-.require('./a.js')
+.add('./a.js')
 .external(['jquery', 'bluebird'])
 .bundle()
 .pipe(fs.createWriteStream('./a.bundle.js'));
@@ -41,7 +41,7 @@ browserify({
 browserify({
     prelude: bcp
 })
-.require('./b.js')
+.add('./b.js')
 .external(['jquery', 'bluebird', 'chart.js', 'moment'])
 .bundle()
 .pipe(fs.createWriteStream('./b.bundle.js'));
