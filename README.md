@@ -8,7 +8,7 @@ npm i --save browserify-common-prelude
 
 ## usage
 
-Better use with [factor-bundle](https://github.com/substack/factor-bundle) ([gulp plugin](https://github.com/undoZen/gulp-factor-bundle)).
+Better use with [factor-bundle](https://github.com/substack/factor-bundle) ([gulp plugin](https://github.com/undoZen/gulp-factor-bundle)). Best thing of it is that let you add `async defer` attributes to script tags and prevent block HTML downloading.
 
 ```javascript
 // build.js
@@ -50,14 +50,14 @@ browserify({
 ```html
 <!doctype html>
 <!-- a.html - only one common lib, data-common attribute could be omitted -->
-<script src="/global.js"></script>
-<script src="/a.bundle.js"></script>
+<script src="/global.js" async defer></script>
+<script src="/a.bundle.js" async defer></script>
 ```
 
 ```html
 <!doctype html>
 <!-- b.html - script tags with data-common attribute must be one after another, no other tags in between -->
-<script src="/global.js" data-common></script>
-<script src="/account.js" data-common></script>
-<script src="/b.bundle.js"></script>
+<script src="/global.js" data-common async defer></script>
+<script src="/account.js" data-common async defer></script>
+<script src="/b.bundle.js" async defer></script>
 ```
