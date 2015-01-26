@@ -5,15 +5,16 @@
         return setTimeout(fn, 1);
     };
     //var clearImmediate = win.cancelAnimationFrame || win.clearImmediate || win.clearTimeout;
-    win.BCP = { prelude: prelude };
+    var _BCP = {};
+    !function () { '{QAS}' }.call(_BCP);
+    var BCP = win.BCP = _BCP.QAS;
+    BCP.prelude = prelude;
 
     var loadedLibs = 0;
     var _cache = BCP.cache = {};
     var _modules = BCP.modules = {};
-    ;(function () { '{QAS}' }.call(BCP));
-    var QAS = BCP.QAS;
 
-    function mergeModules(modules) {
+    var mergeModules = BCP.mergeModules = function (modules) {
         modules = modules || {};
         for (var k in modules) {
             if (modules.hasOwnProperty(k)) {
@@ -29,7 +30,7 @@
         loadedLibs += 1;
         setImmediate(function () {
             if (loadedLibs >= document.querySelectorAll('script[data-common]').length) {
-                QAS.ready();
+                BCP.ready();
             }
         });
     }
@@ -40,7 +41,7 @@
             maybeReady();
         } else {
             var entry;
-            QAS(function (entries) {
+            BCP(function (entries) {
                 while ((entry = entries.shift())) {
                     require(entry);
                 }
@@ -48,7 +49,7 @@
         }
         return require;
         function require(name) {
-            if (!QAS.loaded) {
+            if (!BCP.loaded) {
                 throw new Error('external libs not ready!');
             }
             if (!_cache[name]) {
