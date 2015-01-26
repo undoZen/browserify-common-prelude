@@ -1,6 +1,6 @@
 {
   "name": "browserify-common-prelude",
-  "version": "0.2.0-pre2",
+  "version": "0.2.0-pre3",
   "description": "browserify common prelude",
   "main": "dist/bcp.js",
   "files": [
