@@ -36,7 +36,7 @@
     }
 
     function prelude(modules, cache, entries) {
-        mergeModules(modules)
+        BCP.mergeModules(modules)
         if (!entries || !entries.length) {
             maybeReady();
         } else {
