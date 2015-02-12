@@ -58,7 +58,7 @@
 }(this));
 
     }.call(_BCP);
-    var QAS = BCP.QAS;
+    var QAS = _BCP.QAS;
     var BCP = win.BCP = run;
     BCP.prelude = prelude;
 
