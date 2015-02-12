@@ -9,15 +9,19 @@
     ! function () {
         '{QAS}'
     }.call(_BCP);
-    var QAS = _BCP.QAS;
+
     var BCP = win.BCP = run;
     BCP.prelude = prelude;
+    BCP.mergeModules = mergeModules;
+    var QAS = BCP.QAS = _BCP.QAS;
 
     var loadedLibs = 0;
     var _cache = BCP.cache = {};
     var _modules = BCP.modules = {};
 
-    var mergeModules = BCP.mergeModules = function (modules) {
+    return prelude;
+
+    function mergeModules(modules) {
         modules = modules || {};
         for (var k in modules) {
             if (modules.hasOwnProperty(k)) {
@@ -27,7 +31,7 @@
                 }
             }
         }
-    };
+    }
 
     function maybeReady() {
         loadedLibs += 1;
@@ -41,6 +45,7 @@
 
     function prelude(modules, cache, entries) {
         BCP.mergeModules(modules)
+        var require = requireFactory(entries);
         if (!entries || !entries.length) {
             maybeReady();
         } else {
@@ -52,43 +57,42 @@
             }, entries);
         }
         return require;
-
     }
 
-    function require(origName) {
-        if (!QAS.loaded) {
-            throw new Error('external libs not ready!');
-        }
-        var module, name;
-        if (!_cache[name]) {
-            if (!(module = _modules[name = origName])) {
-                if (!(module = _modules[(name = '/' + name)])) { // 加斜线，加 /node_modules 找两次
-                    if (!(module = _modules[(name = '/node_modules' + name)])) {
-                        // 因为现在和之前加载的 modules 都在这了，直接返回找不到
-                        var err = new Error('Cannot find module \'' +
-                            origName +
-                            '\'\n\nall available modules:\n' +
-                            allModulesName().join('\n'));
-                        err.code = 'MODULE_NOT_FOUND';
-                        throw err;
+    function requireFactory(entries) {
+        return function require(origName) {
+            if (!QAS.loaded) {
+                throw new Error('external libs not ready!');
+            }
+            var module, name;
+            if (!_cache[origName]) {
+                if (!(module = _modules[name = origName])) {
+                    if (!(module = _modules[(name = '/' + name)])) { // 加斜线，加 /node_modules 找两次
+                        if (!(module = _modules[(name = '/node_modules' + name)])) {
+                            // 因为现在和之前加载的 modules 都在这了，直接返回找不到
+                            var err = new Error('Cannot find module \'' +
+                                origName +
+                                '\'\n\nall available modules:\n' +
+                                allModulesName().join('\n'));
+                            err.code = 'MODULE_NOT_FOUND';
+                            throw err;
+                        }
                     }
                 }
+                var m = _cache[name] = _cache[origName] = {
+                    exports: {}
+                };
+                module[0].call(m.exports, function (x) {
+                    var id = module[1][x];
+                    return require(id ? id : '/' + x); // fix for browserify external()
+                }, m, m.exports, prelude, _modules, _cache, entries);
             }
-            var m = _cache[name] = {
-                exports: {}
-            };
-            module[0].call(m.exports, function (x) {
-                var id = module[1][x];
-                return require(id ? id : '/' + x); // fix for browserify external()
-            }, m, m.exports, prelude, _modules, _cache, entries);
+            return _cache[origName].exports;
         }
-        return _cache[name].exports;
     }
 
     function run(fn) {
-        QAS(function (require) {
-            fn(require);
-        }, require);
+        QAS(fn, requireFactory([]));
     }
 
     function allModulesName() {
@@ -121,6 +125,4 @@
         })
         return result;
     }
-
-    return prelude;
 }(this))
