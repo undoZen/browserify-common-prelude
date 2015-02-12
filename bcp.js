@@ -121,7 +121,7 @@
     function ownKeys(obj) {
         var result = [];
         eachOwnValues(obj, function (v, k) {
-            result.puth(k);
+            result.push(k);
         })
         return result;
     }
