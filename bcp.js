@@ -27,7 +27,7 @@
     function mergeModules(modules) {
         modules = modules || {};
         for (var k in modules) {
-            if (modules.hasOwnProperty(k)) {
+            if (typeof k !== 'number' && modules.hasOwnProperty(k)) {
                 if (!(k in _modules)) {
                     _modules[k] = modules[k];
                     if (k[0] !== '/') _modules['/' + k] = modules[k]; // fix for browserify external()
@@ -97,6 +97,7 @@
     function allModulesName() {
         var m = {};
         eachOwnValues(_modules, function (v, k) {
+            if ((''+k).match(/^\/?\d+$/)) return;
             m[k.replace(/^\/(node_modules\/)?/, '')] = 1;
         });
         return ownKeys(m);
