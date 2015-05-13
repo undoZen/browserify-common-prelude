@@ -5,9 +5,8 @@
             return setTimeout(fn, 1);
         };
     //var clearImmediate = win.cancelAnimationFrame || win.clearImmediate || win.clearTimeout;
-    var _BCP = {};
-    ! function () {
-        this.QAS = (function (win) {
+
+    this.QAS = (function (win) {
     /* asynchronous function queuing script
      * http://stackoverflow.com/questions/6963779/whats-the-name-of-google-analytics-async-design-pattern-and-where-is-it-used
      * usage:
@@ -56,13 +55,17 @@
     return QAS;
 
 }(this));
-
-    }.call(_BCP);
+;
 
     var BCP = win.BCP = run;
+    function run(fn) {
+        QAS(fn, requireFactory([]));
+    }
+    run.sync = function (fn) {
+        QAS.sync(fn, requireFactory([]));
+    };
     BCP.prelude = prelude;
     BCP.mergeModules = mergeModules;
-    var QAS = BCP.QAS = _BCP.QAS;
 
     var loadedLibs = 0;
     var _cache = BCP.cache = {};
@@ -140,10 +143,6 @@
         }
     }
 
-    function run(fn) {
-        QAS(fn, requireFactory([]));
-    }
-
     function allModulesName() {
         var m = {};
         eachOwnValues(_modules, function (v, k) {
@@ -174,4 +173,4 @@
         })
         return result;
     }
-}(this))
+}.call(this, this))

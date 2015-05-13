@@ -5,15 +5,18 @@
             return setTimeout(fn, 1);
         };
     //var clearImmediate = win.cancelAnimationFrame || win.clearImmediate || win.clearTimeout;
-    var _BCP = {};
-    ! function () {
-        '{QAS}'
-    }.call(_BCP);
+
+    '{QAS}';
 
     var BCP = win.BCP = run;
+    function run(fn) {
+        QAS(fn, requireFactory([]));
+    }
+    run.sync = function (fn) {
+        QAS.sync(fn, requireFactory([]));
+    };
     BCP.prelude = prelude;
     BCP.mergeModules = mergeModules;
-    var QAS = BCP.QAS = _BCP.QAS;
 
     var loadedLibs = 0;
     var _cache = BCP.cache = {};
@@ -91,10 +94,6 @@
         }
     }
 
-    function run(fn) {
-        QAS(fn, requireFactory([]));
-    }
-
     function allModulesName() {
         var m = {};
         eachOwnValues(_modules, function (v, k) {
@@ -125,4 +124,4 @@
         })
         return result;
     }
-}(this))
+}.call(this, this))
