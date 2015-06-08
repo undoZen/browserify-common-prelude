@@ -23,7 +23,8 @@
         };
     //var clearImmediate = win.cancelAnimationFrame || win.clearImmediate || win.clearTimeout;
 
-    var queue = [];
+    var queue = [].concat(win._qas_queue);
+    if (win._qas_queue) delete win._qas_queue;
     var slice = Array.prototype.slice;
     var QAS = function (cb) {
         var args = slice.call(arguments, 1);
@@ -76,7 +77,7 @@
     function mergeModules(modules) {
         modules = modules || {};
         for (var k in modules) {
-            if (modules.hasOwnProperty(k)) {
+            if (typeof k !== 'number' && modules.hasOwnProperty(k)) {
                 if (!(k in _modules)) {
                     _modules[k] = modules[k];
                     if (k[0] !== '/') _modules['/' + k] = modules[k]; // fix for browserify external()
@@ -146,6 +147,7 @@
     function allModulesName() {
         var m = {};
         eachOwnValues(_modules, function (v, k) {
+            if ((''+k).match(/^\/?\d+$/)) return;
             m[k.replace(/^\/(node_modules\/)?/, '')] = 1;
         });
         return ownKeys(m);
