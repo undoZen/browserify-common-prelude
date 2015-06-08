@@ -23,7 +23,7 @@
         };
     //var clearImmediate = win.cancelAnimationFrame || win.clearImmediate || win.clearTimeout;
 
-    var queue = [].concat(win._qas_queue);
+    var queue = [].concat(win._qas_queue || []);
     if (win._qas_queue) delete win._qas_queue;
     var slice = Array.prototype.slice;
     var QAS = function (cb) {
