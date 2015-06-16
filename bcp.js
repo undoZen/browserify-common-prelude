@@ -67,9 +67,13 @@
             if (!QAS.loaded) {
                 throw new Error('external libs not ready!');
             }
-            var module, name;
-            if (!_cache[origName]) {
-                if (!(module = _modules[name = origName])) {
+            var name = origName;
+            if (typeof name === 'string' && name[0] === '/') {
+                name = name.replace(/^\//, ''); // require('baconjs') === require('/baconjs')
+            }
+            var module;
+            if (!_cache[name]) {
+                if (!(module = _modules[name])) {
                     if (!(module = _modules[(name = '/' + name)])) { // 加斜线，加 /node_modules 找两次
                         if (!(module = _modules[(name = '/node_modules' + name)])) {
                             // 因为现在和之前加载的 modules 都在这了，直接返回找不到
@@ -90,7 +94,7 @@
                     return require(id ? id : '/' + x); // fix for browserify external()
                 }, m, m.exports, prelude, _modules, _cache, entries);
             }
-            return _cache[origName].exports;
+            return _cache[name].exports;
         }
     }
 
