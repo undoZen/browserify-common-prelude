@@ -124,7 +124,7 @@
             var module;
             if (!_cache[name]) {
                 if (!(module = _modules[name])) {
-                    if (!(module = _modules[(name = '/' + name)])) { // 加斜线，加 /node_modules 找两次
+                    if (!(module = _modules[origName === '/' + name ? origName : (name = '/' + name)])) { // 加斜线，加 /node_modules 找两次
                         if (!(module = _modules[(name = '/node_modules' + name)])) {
                             // 因为现在和之前加载的 modules 都在这了，直接返回找不到
                             var err = new Error('Cannot find module \'' +
