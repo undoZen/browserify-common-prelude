@@ -65,7 +65,8 @@
     run.sync = function (fn) {
         QAS.sync(fn, requireFactory([]));
     };
-    BCP.prelude = prelude;
+    var preludeAsync = BCP.prelude = prelude.bind(null, false);
+    BCP.preludeSync = prelude.bind(null, true);
     BCP.mergeModules = mergeModules;
 
     var loadedLibs = 0;
@@ -96,14 +97,14 @@
         });
     }
 
-    function prelude(modules, cache, entries) {
+    function prelude(sync, modules, cache, entries) {
         BCP.mergeModules(modules)
         var require = requireFactory(entries);
         if (!entries || !entries.length) {
             maybeReady();
         } else {
             var entry;
-            QAS(function (entries) {
+            (sync ? QAS.sync : QAS)(function (entries) {
                 while ((entry = entries.shift())) {
                     require(entry);
                 }
@@ -142,7 +143,7 @@
                 module[0].call(m.exports, function (x) {
                     var id = module[1][x];
                     return require(id ? id : '/' + x); // fix for browserify external()
-                }, m, m.exports, prelude, _modules, _cache, entries);
+                }, m, m.exports, preludeAsync, _modules, _cache, entries);
             }
             return _cache[name].exports;
         }
