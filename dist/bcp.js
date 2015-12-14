@@ -73,7 +73,7 @@
     var _cache = BCP.cache = {};
     var _modules = BCP.modules = {};
 
-    return prelude;
+    return BCP.prelude;
 
     function mergeModules(modules) {
         modules = modules || {};
