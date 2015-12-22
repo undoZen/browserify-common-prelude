@@ -21,7 +21,7 @@
 
     var loadedLibs = 0;
     var _cache = BCP.cache = {};
-    var _modules = BCP.modules || (BCP.modules = {});
+    var _modules = BCP.modules = {};
 
     return BCP.prelude;
 
